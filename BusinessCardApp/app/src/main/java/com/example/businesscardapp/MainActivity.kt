@@ -40,7 +40,9 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
-                ) {}
+                ) {
+                    DrawTheCard()
+                }
             }
         }
     }
@@ -95,15 +97,15 @@ fun ContactDetails(modifier: Modifier) {
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Bottom
     ) {
-        ContactRow(text = "+91 1234567890", icon = Icons.Rounded.Phone, modifier = Modifier.padding(4.dp))
-        ContactRow(text = "@mohammadzaidaziz", icon = Icons.Rounded.Email, modifier = Modifier.padding(4.dp))
-        ContactRow(text = "conect@connect", icon =Icons.Default.Email, modifier =Modifier.padding())
+        ContactRow(text = "+91 1234567890", icon = Icons.Rounded.Phone)
+        ContactRow(text = "@mohammadzaidaziz", icon = Icons.Rounded.Email)
+        ContactRow(text = "conect@connect", icon =Icons.Default.Email)
 
     }
 }
 
 @Composable
-fun ContactRow(text: String, icon: ImageVector, modifier: Modifier) {
+fun ContactRow(text: String, icon: ImageVector) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(4.dp)) {
         Icon(icon, contentDescription = null, modifier = Modifier.size(32.dp))
         Text(text = text, modifier = Modifier.padding(start = 8.dp))
