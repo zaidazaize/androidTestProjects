@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Task Manager</string>
+    <string name="text_composable">Text composable</string>
+    <string name="para1">Displays text and follows the recommended Material Design guidelines.</string>
 </resources>
