@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,14 +35,17 @@ fun MyApp(modifier: Modifier = Modifier){
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
     ) {
-       Greeting(name = "Android")
+       Greeting(name = "Android","how are you?")
     }
 }
 
 @Composable
-fun Greeting(name: String) {
+fun Greeting(name: String,message : String) {
     Surface(color=MaterialTheme.colorScheme.primary) {
-        Text(text = "Hello $name!", modifier = Modifier.padding(24.dp))
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(text = "Hello $name!")
+            Text(text = message, )
+        }
     }
 }
 
@@ -49,6 +53,6 @@ fun Greeting(name: String) {
 @Composable
 fun GreetingPreview() {
     BasicCodeLabTheme {
-        Greeting("Android")
+        Greeting("Android","how are you?")
     }
 }
