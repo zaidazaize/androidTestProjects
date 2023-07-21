@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.example.basiclayoutcodelab.ui.theme.BasicLayoutCodelabTheme
 import java.util.Locale
 
+
 class MainActivity : ComponentActivity() {
 
 
@@ -57,6 +59,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
     BasicLayoutCodelabTheme() {
@@ -64,7 +67,13 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            Scaffold(
+                bottomBar = { AppBottomNavigation()}
+            ) {
+                 padding->
+                HomeScreen(Modifier.padding(padding))
 
+            }
         }
     }
 }
@@ -89,6 +98,43 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
+
+//TODO : handle error for bottom navigation
+@Composable
+private fun AppBottomNavigation(modifier: Modifier = Modifier) {
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.background,
+        modifier = modifier
+    ) {
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Spa,
+                    contentDescription = null
+                )
+            },
+            label = {
+                Text(stringResource(R.string.bottom_navigation_home))
+            },
+            selected = true,
+            onClick = {}
+        )
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = null
+                )
+            },
+            label = {
+                Text(stringResource(R.string.bottom_navigation_profile))
+            },
+            selected = false,
+            onClick = {}
+        )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
