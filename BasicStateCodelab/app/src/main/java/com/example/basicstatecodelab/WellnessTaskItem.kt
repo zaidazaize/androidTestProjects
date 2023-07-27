@@ -49,6 +49,7 @@ fun WellnessTaskItem(
 fun StatefulWellnessTaskItem(
     modifier: Modifier = Modifier,
     taskName: String,
+    onClose: () -> Unit
 ) {
     var checked by rememberSaveable {
         mutableStateOf(false)
@@ -58,12 +59,12 @@ fun StatefulWellnessTaskItem(
         taskName = taskName,
         checked = checked,
         onCheckedChange = {newValue-> checked = newValue},
-        onClose = {})
+        onClose = onClose)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun WellnessTaskItemPreview() {
 
-    StatefulWellnessTaskItem(taskName = "Drink Water")
+    StatefulWellnessTaskItem(taskName = "Drink Water", onClose = {})
 }
