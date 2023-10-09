@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">UILemonade</string>
+    <string name="tap_to_restart_the_process">Tap to restart the process</string>
+    <string name="empty_glass">Empty Glass</string>
+</resources>
