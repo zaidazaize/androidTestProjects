@@ -87,7 +87,7 @@ fun LemonApp() {
 
 @Composable
 fun LemonadeScreenWithImage(
-    modifier: Modifier = Modifier,
+    modifier: Modifier    = Modifier,
     screenState: LemonadeState,
     updateScreenState: (LemonadeState) -> Unit
 ) {

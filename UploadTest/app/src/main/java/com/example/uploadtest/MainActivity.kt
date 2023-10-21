@@ -12,9 +12,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +44,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.UUID
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +56,7 @@ class MainActivity : ComponentActivity() {
     private var stateFlow = MutableStateFlow(0.0f)
     private var fileUriUiState = mutableStateOf("")
     private var cursorState = mutableStateOf("")
-    private var uriMetaDataState = mutableStateOf("")
+    private var uriMetaDataState = MutableStateFlow(List<String>(0) { "" })
     private var listState = MutableStateFlow(listOf<String>())
     private lateinit var content: ContentResolver
 
@@ -65,7 +71,7 @@ class MainActivity : ComponentActivity() {
                 App(state = stateFlow,
                     fileUri = fileUriUiState,
                     cursorState = cursorState,
-                    uriMetaDataState = uriMetaDataState,
+                    uriMetaDataState = uriMetaDataState.asStateFlow(),
                     list = listState.collectAsState(),
                     onClick = { fileUploader.launch("application/pdf") })
             }
@@ -73,8 +79,11 @@ class MainActivity : ComponentActivity() {
         fileListDownloader()
     }
 
-    private val fileUploader = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
+    private val fileUploader = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uriList ->
+        if (uriList == null) {
+            return@registerForActivityResult
+        }
+        for ((i, uri) in uriList.withIndex()) {
 
             val fileRef = storageRef.child("files").child(UUID.randomUUID().toString() + "-major.pdf")
             val metadata = storageMetadata {
@@ -106,7 +115,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     "Unknown"
                 }
-                uriMetaDataState.value = "Name: $displayName, Size: $size"
+                uriMetaDataState.value = uriMetaDataState.value + "Name: $displayName, Size: $size"
             }
 
         }
@@ -116,13 +125,13 @@ class MainActivity : ComponentActivity() {
         downloadRef = Firebase.storage.reference.child("files")
         downloadRef.listAll().addOnSuccessListener { listResult ->
             val list = mutableListOf<String>()
-            var i =1;
+            var i = 1;
             listResult.items.forEach { item ->
                 list.add("item ${i++} : ${item}")
             }
-//            listResult.prefixes.forEach { prefix ->
-//                list.add(prefix.name)
-//            }
+            //            listResult.prefixes.forEach { prefix ->
+            //                list.add(prefix.name)
+            //            }
             listState.value = list
         }
     }
@@ -134,7 +143,7 @@ fun App(onClick: () -> Unit,
         state: MutableStateFlow<Float>,
         fileUri: MutableState<String>,
         cursorState: MutableState<String>,
-        uriMetaDataState: MutableState<String>,
+        uriMetaDataState: StateFlow<List<String>>,
         list: State<List<String>>) {
     Scaffold(
             topBar = {
@@ -148,11 +157,14 @@ fun App(onClick: () -> Unit,
             }
     ) { innerPadding ->
 
+
         Surface(modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.tertiaryContainer)) {
+
             val statef: Float by state.collectAsState()
+            val fileMetadata by uriMetaDataState.collectAsState()
 
             Column(modifier = Modifier.fillMaxSize(),
                    horizontalAlignment = Alignment.CenterHorizontally) {
@@ -167,9 +179,18 @@ fun App(onClick: () -> Unit,
                 }
                 Text(text = fileUri.value)
                 Text(text = cursorState.value)
-                Text(text = uriMetaDataState.value)
                 Spacer(modifier = Modifier.width(20.dp))
-                LazyColumn() {
+                Text(text = "UriMetaDataState", style = MaterialTheme.typography.headlineMedium)
+                LazyColumn(modifier = Modifier.padding(16.dp)
+                        ) {
+                    items(fileMetadata.size) {
+                        Text(text = fileMetadata[it])
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Text(text = "ListState", style = MaterialTheme.typography.headlineMedium)
+                    }
                     items(list.value.size) {
                         Text(text = list.value[it])
                     }
