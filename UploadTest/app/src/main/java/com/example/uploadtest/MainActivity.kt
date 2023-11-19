@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun getUriMetaData(uri: Uri) {
+    private fun getUriMetaData(uri: Uri) {
         val cursor: Cursor? = content.query(uri, null, null, null, null, null)
 
         cursorState.value = cursor?.toString() ?: "null"
